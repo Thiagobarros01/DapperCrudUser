@@ -9,6 +9,7 @@ namespace CRUDDapper.Profiles
         public ProfileAutoMapper() 
         {
             CreateMap<User, ListUserDto>();
+            CreateMap<User, IncludeUserDto>();
         }
     }
 }

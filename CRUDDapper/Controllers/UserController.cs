@@ -1,4 +1,5 @@
-﻿using CRUDDapper.Models;
+﻿using CRUDDapper.Dto;
+using CRUDDapper.Models;
 using CRUDDapper.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,21 +12,44 @@ namespace CRUDDapper.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService) 
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult> GetUsers() 
+        public async Task<ActionResult> GetUsers()
         {
             var users = await _userService.GetUsers();
-            if(users.Status == false)
+            if (users.Status == false)
             {
                 return NotFound(users);
             }
             return Ok(users);
+        }
+
+        [HttpGet("GetUserById/{Id}")]
+        public async Task<ActionResult> GetUserById(int Id)
+        {
+            var user = await _userService.GetUserById(Id);
+            if (user.Status == false)
+            {
+                return NotFound(user);
+            }
+            return Ok(user);
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> AddUser(IncludeUserDto newUser)
+        {
+            var NewUser = await _userService.AddUser(newUser);
+          
+            if (NewUser.Status == false)
+            {
+                return BadRequest(NewUser);
+            }
+            return Ok(NewUser);
         }
 
     }
