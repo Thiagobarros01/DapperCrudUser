@@ -52,5 +52,26 @@ namespace CRUDDapper.Controllers
             return Ok(NewUser);
         }
 
+        [HttpPut("UpdateUser")]
+        public async Task<ActionResult> UpdateUser(UserEditDto UserEdit)
+        {
+            var user = await _userService.UserEdit(UserEdit);
+            if(user == null)
+            {
+                return BadRequest(user);
+            }  
+            return Ok(user);
+        }
+
+        [HttpDelete("DeleteUser{Id}")]
+        public async Task<IActionResult> RemoveUser(int Id)
+        {
+            var user = await _userService.UserRemove(Id);
+            if (user == null)
+            {
+                return BadRequest(user);
+            }
+            return Ok(user);
+        }
     }
 }

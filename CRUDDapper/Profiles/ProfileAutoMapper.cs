@@ -10,6 +10,7 @@ namespace CRUDDapper.Profiles
         {
             CreateMap<User, ListUserDto>();
             CreateMap<User, IncludeUserDto>();
+            CreateMap<User, UserEditDto>();
         }
     }
 }

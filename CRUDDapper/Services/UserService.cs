@@ -3,6 +3,7 @@ using CRUDDapper.Dto;
 using CRUDDapper.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 
 
 namespace CRUDDapper.Services
@@ -110,6 +111,64 @@ namespace CRUDDapper.Services
         private static async Task<IEnumerable<User>> GetAllUsers(SqlConnection connection)
         {
             return await connection.QueryAsync<User>("SELECT * FROM Users");
+        }
+
+        public async Task<ResponseModel<List<ListUserDto>>> UserEdit(UserEditDto userDto)
+        {
+            ResponseModel<List<ListUserDto>> response = new ResponseModel<List<ListUserDto>>();
+            using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+
+
+                //capture user
+                var user = await conn.ExecuteAsync("update Users set FullName = @FullName, Email = @Email, Profession = @Profession, Salary = @Salary, CPF = @CPF, Situation = @Situation where Id = @Id",userDto);
+
+                if(user == 0)
+                {
+                    response.Status =false;
+                    response.Message = "Not user found!";
+                    return response;
+                }
+
+                var users = await GetAllUsers(conn);
+
+                //Mapper
+                var UserMapper =  _mapper.Map<List<ListUserDto>>(users);
+
+                response.Data = UserMapper;
+                response.Message = "Usuario atualizado!";
+                response.Status = true;
+                return response;
+
+
+
+            }
+        }
+
+        public async Task<ResponseModel<List<ListUserDto>>> UserRemove(int IdUser)
+        {
+            ResponseModel<List<ListUserDto>> response = new ResponseModel<List<ListUserDto>>();
+            using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                var user = await conn.ExecuteAsync("delete from Users where Id = @Id", new {Id = IdUser});
+
+                if(user == 0)
+                {
+                    response.Status =false;
+                    response.Message = "Falha na operação!";
+                    return response;
+                }
+                
+                var users = await GetAllUsers(conn);
+
+                //MAP
+                var MappUsers = _mapper.Map<List<ListUserDto>>(users);
+                response.Data = MappUsers;
+                response.Message = "Excluido com sucesso!";
+                response.Status = true;
+                return response;
+
+            }
         }
     }
 }
