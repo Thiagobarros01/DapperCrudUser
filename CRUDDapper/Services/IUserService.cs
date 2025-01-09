@@ -10,6 +10,8 @@ namespace CRUDDapper.Services
         public Task<ResponseModel<List<IncludeUserDto>>> AddUser(IncludeUserDto NewUser);
         public Task<ResponseModel<List<ListUserDto>>> UserEdit(UserEditDto userDto);
         public Task<ResponseModel<List<ListUserDto>>> UserRemove (int IdUser);
-       
+        public Task<ResponseModel<User>> GetUserTest(int id);
+
+
     }
 }

@@ -73,5 +73,16 @@ namespace CRUDDapper.Controllers
             }
             return Ok(user);
         }
+
+        [HttpGet("GetUserId")]
+        public async Task<IActionResult> GetUserId(int id)
+        {
+            var user = await  _userService.GetUserTest(id);
+            if (user == null)
+            {
+                return BadRequest(user);
+            }
+            return Ok(user);
+        }
     }
 }

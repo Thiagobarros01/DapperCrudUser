@@ -3,7 +3,7 @@ using CRUDDapper.Dto;
 using CRUDDapper.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
+
 
 
 namespace CRUDDapper.Services
@@ -28,6 +28,7 @@ namespace CRUDDapper.Services
                 var newUser = await connection.ExecuteAsync("insert into Users (FullName,Email,Profession,Salary,CPF,Passw,Situation)" +
                     "values (@FullName,@Email,@Profession,@Salary,@CPF,@Passw,@Situation)",NewUser);
 
+                
                 if(newUser == 0)
                 {
                     response.Status = false;
@@ -169,6 +170,29 @@ namespace CRUDDapper.Services
                 return response;
 
             }
+
+            
+        }
+        public async Task<ResponseModel<User>> GetUserTest(int id)
+        {
+            ResponseModel<User> response = new ResponseModel<User>();
+            using(var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                var user = await connection.QueryFirstOrDefaultAsync<User>("select * from users where Id = @Id", new { Id = id }) ;
+
+                if(user == null)
+                {
+                    response.Message = "Null";
+                    response.Status = false;
+                    return response;
+                }
+
+                response.Data = user;
+                response.Status = true;
+                return response;
+            }
+
+            
         }
     }
 }
